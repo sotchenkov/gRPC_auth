@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"sso/internal/app"
 	"sso/internal/config"
 	"sso/internal/lib/logger/handlers/slogpretty"
 )
 
 const (
 	envLocal = "local"
-	envProd = "prod"
+	envProd  = "prod"
 )
 
 func main() {
@@ -22,9 +23,11 @@ func main() {
 
 	log.Info("starting application")
 
+	application := app.New(log, cfg.GRPC.Port, cfg.StoragePath, cfg.TokenTTL)
+	application.GRPCServer.MustRun()
 
-	// TODO: инициализировать приложения 
-	
+	// TODO: инициализировать приложения
+
 	// TODO: запустить gRPC-сервер приложения
 }
 

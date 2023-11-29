@@ -1,2 +1,4 @@
 # gRPC_auth
-gRPC authorization service
+gRPC SSO service
+
+Protobuf contract: https://github.com/sotchenkov/protos
