@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"os/signal"
 	"sso/internal/app"
 	"sso/internal/config"
 	"sso/internal/lib/logger/handlers/slogpretty"
+	"syscall"
 )
 
 const (
@@ -24,7 +26,18 @@ func main() {
 	log.Info("starting application")
 
 	application := app.New(log, cfg.GRPC.Port, cfg.StoragePath, cfg.TokenTTL)
-	application.GRPCServer.MustRun()
+	go application.GRPCServer.MustRun()
+
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
+
+	s := <- stop
+
+	log.Info("stopping application...", slog.String("signal", s.String()))
+
+	application.GRPCServer.Stop()
+
+	log.Info("application stoped")
 
 	// TODO: инициализировать приложения
 
