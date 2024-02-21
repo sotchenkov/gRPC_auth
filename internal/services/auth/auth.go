@@ -25,6 +25,8 @@ type Auth struct {
 
 var (
 	ErrInvalidCredentials = errors.New("invalid credentials")
+	ErrUserExists         = errors.New("user already exists")
+	ErrUserNotFound       = errors.New("user not found")
 )
 
 //go:generate go run github.com/vektra/mockery/v2@v2.28.2 --name=URLSaver
