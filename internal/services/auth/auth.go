@@ -136,7 +136,7 @@ func (a *Auth) RegisterNewUser(
 
 	id, err := a.usrSaver.SaveUser(ctx, email, passHash)
 	if err != nil {
-		if errors.Is(err, storage.ErrUserExist) {
+		if errors.Is(err, storage.ErrUserExists) {
 			log.Warn("user already exists", sl.Err(err))
 
 			return 0, fmt.Errorf("%s: %w", fn, ErrUserEcists)

@@ -6,26 +6,28 @@ import (
 	"fmt"
 
 	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/sqlite3"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 func main() {
-	var storagePath, migratpionsPath, migrationsTable string
+	var storagePath, migrationsPath, migrationsTable string
 
-	flag.StringVar(&storagePath, "storage-path", "", "")
-	flag.StringVar(&migratpionsPath, "migrations-path", "", "path to migrations")
-	flag.StringVar(&migrationsTable, "migrations-path", "migrations", "name of the migrations")
+	flag.StringVar(&storagePath, "storage-path", "", "path to storage")
+	flag.StringVar(&migrationsPath, "migrations-path", "", "path to migrations")
+	flag.StringVar(&migrationsTable, "migrations-table", "migrations", "name of migrations table")
 	flag.Parse()
 
 	if storagePath == "" {
-		panic("storage path is required")
+		panic("storage-path is required")
 	}
-	if migratpionsPath == "" {
-		panic("migratpions path is required")
+	if migrationsPath == "" {
+		panic("migrations-path is required")
 	}
 
 	m, err := migrate.New(
-		"file://" + migratpionsPath,
-		fmt.Sprint("sqlite3://%s?x-migrations-table=%s", storagePath, migrationsTable),
+		"file://"+migrationsPath,
+		fmt.Sprintf("sqlite3://%s?x-migrations-table=%s", storagePath, migrationsTable),
 	)
 	if err != nil {
 		panic(err)
@@ -41,5 +43,20 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("migrations applied successfully")
+	fmt.Println("migrations applied")
+}
+
+// Log represents the logger
+type Log struct {
+	verbose bool
+}
+
+// Printf prints out formatted string into a log
+func (l *Log) Printf(format string, v ...interface{}) {
+	fmt.Printf(format, v...)
+}
+
+// Verbose shows if verbose print enabled
+func (l *Log) Verbose() bool {
+	return false
 }
